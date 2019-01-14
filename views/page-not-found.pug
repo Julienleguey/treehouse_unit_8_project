@@ -1,0 +1,10 @@
+extends layout
+
+block content
+
+  h1= title
+  p= message
+
+  p
+    - var urlAllBooks = '/';
+    a(class="button" href=urlAllBooks) Back
