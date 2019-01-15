@@ -12,7 +12,21 @@ router.get('/', function(req, res, next) {
     search = "";
   }
   // finding all the books according to search
-  Book.findAll({order: [["title", "ASC"]], where: {title: {[Op.like]: '%' + search + '%'}}}).then(function(books) {
+  Book.findAll({
+    order: [["title", "ASC"]], 
+    // Construct request to get the following : "find Book where title LIKE brief and LIKE time"
+    // This one is static obvsly
+    // As there's no pre made function in js to do what you need you have to make the custom algorithm
+    // 1- Split search string in an array of string
+    // 2- Iterate through each string in the array (loop) to construct the request
+    // I leave it static with that note because I don't even know how to make a js loop 😂
+    where: {
+      [Op.and]: [{
+        title: { [Op.like]: '%' + "brief" + '%' },  
+        title: { [Op.like]: '%' + "time" + '%' }
+      }]
+    }
+  }).then(function(books) {
     res.render("books/index", {books: books, title: "Books"});
   });
 });
