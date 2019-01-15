@@ -2,14 +2,16 @@ extends ../layout
 
 block content
   h1= title
+
+
   p
     - var urlNewBook = "/books/new-book";
     a(class='button' href=urlNewBook) Create New Book
 
 
-  form(action='/books/pageblob1', method='get')
-    input(type='text', name='search', id='search', placeholder='Search...')
-    button(type='Submit') Search
+  form(action='/books', id='search', method='get')
+    input(type='text', name='search', placeholder='Search...')
+    button(type='Submit', form='search') Search
 
 
   table
@@ -31,10 +33,5 @@ block content
 
 
   div(id="pagination")
-      - var n = 0;
-      ul
-        while n < pagesNbr
-          li
-            - var buttonNbr = n+1;
-            - var urlButton = "/books/pageblob" + buttonNbr;
-            a(class="button" name=n+1, href=urlButton)= n++ +1
+
+  script(type="text/javascript" src='/javascripts/script.js')

@@ -96,6 +96,18 @@ input[type=text] {
   color: rgb(236, 15, 15);
 }
 
-li{
+#pagination ul li {
   display: inline;
+}
+
+  li a.active {
+    background-color: #01b189;
+  }
+
+.hidden {
+  display: none;
+}
+
+.displayed {
+  display: ;
 }
