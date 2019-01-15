@@ -11,8 +11,30 @@ router.get('/', function(req, res, next) {
   if(search === undefined) {
     search = "";
   }
+
+  function functionSearch(search, searchTerms) {
+    let pouet = "";
+    for (let i = 0; i < searchTerms.length; i++) {
+      pouet += {[Op.like]: '%' + searchTerms[i] + '%'};
+      if (i < searchTerms.length -1) {
+        pouet += ", ";
+      }
+    }
+    if (search === "") {
+      return {[Op.like]: '%' + "" + '%'};
+    } else {
+      return pouet;
+    }
+  }
+
+
+  // adding the search term in an array
+  let searchTerms = search.split(" ");
+  console.log(searchTerms);
   // finding all the books according to search
-  Book.findAll({order: [["title", "ASC"]], where: {title: {[Op.like]: '%' + search + '%'}}}).then(function(books) {
+  // Book.findAll({order: [["title", "ASC"]], where: {title: {[Op.like]: '%' + search + '%'}}}).then(function(books) {
+  Book.findAll({order: [["title", "ASC"]], where: {title: {[Op.and]: [functionSearch(search, searchTerms)]}}}).then(function(books) {
+  // Book.findAll({order: [["title", "ASC"]], where: {title: {[Op.and]: [{[Op.like]: '%' + 'harry' + '%'}, {[Op.like]: '%' + 'fire' + '%'}]}}}).then(function(books) {
     res.render("books/index", {books: books, title: "Books"});
   });
 });
