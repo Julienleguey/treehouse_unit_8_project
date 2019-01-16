@@ -52,7 +52,7 @@ router.get('/', function(req, res, next) {
 /**************************
 GET, create a new book form
 **************************/
-router.get('/new-book', function(req, res, next) {
+router.get('/new', function(req, res, next) {
   res.render("books/new-book", {book: Book.build(), title: "New Book"});
 });
 
@@ -60,7 +60,7 @@ router.get('/new-book', function(req, res, next) {
 /**********************
 POST, create a book
 **********************/
-router.post('/new-book', function(req, res, next) {
+router.post('/new', function(req, res, next) {
   Book.create(req.body).then(function(book) {
     res.redirect("/books");
   }).catch(function(err){
