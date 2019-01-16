@@ -3,15 +3,15 @@ extends ../layout
 block content
   h1= title
 
+  div(class='header')
+    div(class='new-book')
+      - var urlNewBook = "/books/new-book";
+      a(class='button' href=urlNewBook) Create New Book
 
-  p
-    - var urlNewBook = "/books/new-book";
-    a(class='button' href=urlNewBook) Create New Book
-
-
-  form(action='/books', id='search', method='get')
-    input(type='text', name='search', placeholder='Search...')
-    button(type='Submit', form='search') Search
+    div(class='search')
+      form(action='/books', id='search', class='search',method='get')
+        input(type='text', name='search', placeholder='Search...')
+        button(type='Submit', class='button', form='search') Search
 
 
   table
@@ -25,7 +25,7 @@ block content
       each book in books
         tr
           td
-            - var urlBookDetail = '/books/' + book.id + '/update';
+            - var urlBookDetail = '/books/' + book.id;
             a(href=urlBookDetail)= book.title
           td= book.author
           td= book.genre

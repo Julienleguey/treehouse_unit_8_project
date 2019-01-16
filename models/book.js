@@ -22,6 +22,5 @@ module.exports = function(sequelize, DataTypes) {
     year: DataTypes.INTEGER
   });
 
-
   return Book;
 };

@@ -4,44 +4,62 @@ var Book = require("../models").Book;
 var Sequelize = require('sequelize');
 const Op = Sequelize.Op;
 
-/* GET all the books */
+/****************
+GET all the books
+****************/
 router.get('/', function(req, res, next) {
   // defining search
   let search = req.query.search;
   if(search === undefined) {
     search = "";
   }
-
+  // adding the search term in an array
+  let searchTerms = search.split(" ");
+  // function used to search for different keywords
   function functionSearch(search, searchTerms) {
-    let pouet = [];
+    let searchArray = [];
     for (let i = 0; i < searchTerms.length; i++) {
-      pouet.push({[Op.like]: '%' + searchTerms[i] + '%'});
+      searchArray.push({[Op.like]: '%' + searchTerms[i] + '%'});
     }
     if (search === "") {
       return {[Op.like]: '%' + "" + '%'};
     } else {
-      return pouet;
+      return searchArray;
     }
   }
-
-
-  // adding the search term in an array
-  let searchTerms = search.split(" ");
-  console.log(searchTerms);
   // finding all the books according to search
-  // Book.findAll({order: [["title", "ASC"]], where: {title: {[Op.like]: '%' + search + '%'}}}).then(function(books) {
-  Book.findAll({order: [["title", "ASC"]], where: {title: {[Op.and]: functionSearch(search, searchTerms)}}}).then(function(books) {
-  // Book.findAll({order: [["title", "ASC"]], where: {title: {[Op.and]: [{[Op.like]: '%' + 'harry' + '%'}, {[Op.like]: '%' + 'fire' + '%'}]}}}).then(function(books) {
+  /* Search principle:
+    1. The user may want to find a book using words in the title.
+    Since a library can have a lot of books, ALL of the keywords used by the user have to be in the title.
+    e.g.: searching for "harry fire" will only return "Harry Potter and the Goblet of Fire"
+    2. The user may want to find a book by author, genre or year. In those cases, the search will return any books with one of the keywords
+    matching these 3 categories.
+    e.g.: searching for "Rowling 2011" will return all the books by J.K. Rowling and all the books from 2011.
+    e.g.: searching for "harry fire 2011" will only return the books from 2011, since no books title matches exactly this 3 keywords.
+    e.g.: searching for "harry fire rowling 2011" will return all the books by J.K. Rowling and all the books from 2011.
+  */
+  Book.findAll({order: [["title", "ASC"]], where: {[Op.or]: {
+    title: {[Op.and]: functionSearch(search, searchTerms)},
+    author: {[Op.or]: functionSearch(search, searchTerms)},
+    genre: {[Op.or]: functionSearch(search, searchTerms)},
+    year: {[Op.or]: functionSearch(search, searchTerms)},
+  }}}).then(function(books) {
     res.render("books/index", {books: books, title: "Books"});
   });
 });
 
-/* Create a new book form. */
+
+/**************************
+GET, create a new book form
+**************************/
 router.get('/new-book', function(req, res, next) {
   res.render("books/new-book", {book: Book.build(), title: "New Book"});
 });
 
-/* POST create book. */
+
+/**********************
+POST, create a book
+**********************/
 router.post('/new-book', function(req, res, next) {
   Book.create(req.body).then(function(book) {
     res.redirect("/books");
@@ -60,8 +78,11 @@ router.post('/new-book', function(req, res, next) {
   });
 });
 
-/* GET individual book in order to update or delete it. */
-router.get("/:id/update", function(req, res, next){
+
+/*****************************************************
+GET an individual book in order to update or delete it
+*****************************************************/
+router.get("/:id", function(req, res, next){
   Book.findById(req.params.id).then(function(book) {
     if (book) {
       res.render("books/update-book", {book: book, title: "Update Book"});
@@ -77,9 +98,10 @@ router.get("/:id/update", function(req, res, next){
 });
 
 
-
-/* POST update book. */
-router.post("/:id/update", function(req, res, next){
+/******************
+POST a book update
+******************/
+router.post("/:id", function(req, res, next){
   Book.findById(req.params.id).then(function(book) {
     if (book) {
       return book.update(req.body);
@@ -110,7 +132,9 @@ router.post("/:id/update", function(req, res, next){
 });
 
 
-/* DELETE individual book. */
+/******************************
+POST, delete an individual book
+******************************/
 router.post("/:id/delete", function(req, res, next){
   Book.findById(req.params.id).then(function(book) {
     if (book) {

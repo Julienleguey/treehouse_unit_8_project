@@ -1,9 +1,10 @@
 body {
   padding: 10px 50px 50px;
   font: 18px "Garamond", serif;
+  width: 800px;
 }
 
-a {
+a, button {
   color: #019875;
   text-decoration: none;
   font-weight: bold;
@@ -14,7 +15,7 @@ a {
     color: black;
   }
 
-a.button, input[type=submit] {
+a.button, input[type=submit], button.button {
   color: white;
   background: #019875;
   font-family: "Lucida Grande", Helvetica, Arial, sans-serif;
@@ -29,11 +30,11 @@ form a.button, input[type=submit] {
   transition: 0.4s;
 }
 
-input[type=submit] {
+input[type=submit], button.button, form.search {
   border: 0;
 }
 
-  a.button:hover, input[type=submit]:hover {
+  a.button:hover, input[type=submit]:hover, button.button:hover {
     background-color: #01b189;
   }
 
@@ -110,4 +111,23 @@ input[type=text] {
 
 .displayed {
   display: ;
+}
+
+div.header{
+  display: flex;
+  justify-content: flex-start;
+  margin-bottom: 20px;
+/*  display: block; */
+}
+
+div.new-book, div.search{
+  display: flex;
+}
+
+div.search{
+  margin-left: 70px;
+}
+
+button.button{
+  padding: 12px;
 }
